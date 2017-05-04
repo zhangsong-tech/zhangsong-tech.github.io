@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "android N 文件系统权限适配"
-subtitle:   " \"android file provider\""
+subtitle:   " android file provider "
 date:       2017-04-18 12:00:00
 author:     "ZhangSong"
 header-img: "img/post-bg-2015.jpg"
@@ -111,38 +111,38 @@ path：文件夹“相对路径”，完整路径取决于当前的标签类型�
 path可以为空，表示指定目录下的所有文件、文件夹都可以被共享。
 ```<paths>```这个元素内可以包含以下一个或多个，具体如下：
 
-```
+```xml
 <files-path name="name" path="path" />
 
 ```
 
 物理路径相当于Context.getFilesDir() + /path/。
 
-```
+```xml
 <cache-path name="name" path="path" />
 ```
 
 物理路径相当于Context.getCacheDir() + /path/。
 
-```
+```xml
 <external-path name="name" path="path" />
 ```
 
 物理路径相当于Environment.getExternalStorageDirectory() + /path/。
 
-```
+```xml
 <external-files-path name="name" path="path" />
 ```
 
 物理路径相当于Context.getExternalFilesDir(String) + /path/。
 
-```
+```xml
 <external-cache-path name="name" path="path" />
 ```
 
 物理路径相当于Context.getExternalCacheDir() + /path/。
 
-```
+```xml
 <root-path name="name" path="path" />
 ```
 
