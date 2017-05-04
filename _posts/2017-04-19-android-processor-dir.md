@@ -15,11 +15,12 @@ android annotation processor 可以在编译时完成一些任务，常见方式
 
 ## processor 中处理
 
-自定义processor常规做法继承```AbstractProcessor```，在```void init(ProcessingEnvironment processingEnvironment) {}```方法中拿到相应的路径变量。
- ```rocessingEnvironment.getFiler()```虽然可以拿到```Filer```变量，但是很不巧，他没有相应的工程路径的信息，但是可以根据特定的工程目录结构，拿到我们想要的位置。
-比如我们是一个android gradle类型的工程结构，可以通过类似下面的方式获取工程路径,
+自定义processor常规做法继承```AbstractProcessor```，在```void init(ProcessingEnvironment processingEnvironment) {}```方法中拿到相应的路径变量。```rocessingEnvironment.getFiler()```虽然可以拿到```Filer```变量，但是很不巧，他没有相应的工程路径的信息，但是可以根据特定的工程目录结构，拿到我们想要的位置。
+比如我们是一个android gradle类型的工程结构，可以通过类似下面的方式获取工程路径:
 
-```
+
+```java
+
 private Path getProjectDir(Filer mFiler){
         Path projectPath = null;
         try {
@@ -35,6 +36,8 @@ private Path getProjectDir(Filer mFiler){
         return projectPath;
     }
 ```
+
+
 虽然拿到，但是这种方式其丑无比，利用Filer创建文件的方法创建```FileObject```，随之一路回溯，一串的```getParent()```看着令人心烦意乱.
 
 ## gradle 中挂task处理
@@ -43,7 +46,7 @@ android processor处理过程中可能会触发多次，原因是如果生成的
 processor在compile过程中完成，可以找到相应的task来处理任务。
 
 
-```
+```groovy
 afterEvaluate{
     tasks.matching{
         it.name.startsWith("compileDebugJavaWithJavac")

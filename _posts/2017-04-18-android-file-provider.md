@@ -19,10 +19,10 @@ android的更新速度已经上天了，android N的装机率还少的可怜，�
 有人提出反射的方式绕开，但是路子太野,也没有实测。
 目测是更改StrictMode中的检测方式，会在application中被调用，实现的效果可能和下面的```StrictMode.setVmPolicy()```效果类似。
 
-```
+```java
 try {
-Method ddfu = StrictMode.class.getDeclaredMethod("disableDeathOnFileUriExposure");
-ddfu.invoke(null);
+    Method ddfu = StrictMode.class.getDeclaredMethod("disableDeathOnFileUriExposure");
+    ddfu.invoke(null);
 } catch (Exception e) {
 }
 ```
@@ -34,7 +34,7 @@ ddfu.invoke(null);
 
 application启动时设置：
 
-```
+```java
 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
     StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
     StrictMode.setVmPolicy(builder.build());
@@ -55,14 +55,15 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 5. 发送 Content URI 至其他的 App
 
 通常使用的方法
-```
+```java
 Uri uri = Uri.fromFile(tempFile);
 ```
 这种方法拿到的就是file://Uri形式，需要使用File Provider来处理。
 
 FileProvider继承自ContentProvider，需要提前注册：
-```
-manifest>
+
+```xml
+<manifest>
     ...
     <application>
         ...
@@ -96,7 +97,8 @@ android:authorities 最好是 application id 而不能直接用包名硬编码�
 
 #### 指定有效的文件
 在生成 Content URI 之前你还需要提前指定文件目录，通常的做法是在 res 目录下新建一个 xml 文件夹，然后创建一个 xml 文件，在此文件中指定共享文件的路径和名字，示例如下：
-```
+
+```xml
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <external-path name="my_images" path="images/"/>
     ...
@@ -109,34 +111,48 @@ path：文件夹“相对路径”，完整路径取决于当前的标签类型�
 path可以为空，表示指定目录下的所有文件、文件夹都可以被共享。
 ```<paths>```这个元素内可以包含以下一个或多个，具体如下：
 
-```<files-path name="name" path="path" />```
+```
+<files-path name="name" path="path" />
+
+```
 
 物理路径相当于Context.getFilesDir() + /path/。
 
-```<cache-path name="name" path="path" />```
+```
+<cache-path name="name" path="path" />
+```
 
 物理路径相当于Context.getCacheDir() + /path/。
 
-```<external-path name="name" path="path" />```
+```
+<external-path name="name" path="path" />
+```
 
 物理路径相当于Environment.getExternalStorageDirectory() + /path/。
 
-```<external-files-path name="name" path="path" />```
+```
+<external-files-path name="name" path="path" />
+```
 
 物理路径相当于Context.getExternalFilesDir(String) + /path/。
 
-```<external-cache-path name="name" path="path" />```
+```
+<external-cache-path name="name" path="path" />
+```
 
 物理路径相当于Context.getExternalCacheDir() + /path/。
 
-```<root-path name="name" path="path" />```
+```
+<root-path name="name" path="path" />
+```
 
 物理路径相当于/path/，不过不在官方文档里面。
 
 
 #### 为共享文件生成 Content URI
 文件配置完成后还需要生成可以被其他 App 访问的 Content URI，可以直接调用 FileProvider 提供的 getUriForFile(File file) 方法
-```
+
+```java
 File imagePath = new File(getContext().getFilesDir(), "images");
 File newFile = new File(imagePath, "default_image.jpg");
 Uri contentUri = FileProvider.getUriForFile(getContext(), "com.mydomain.provider", newFile);
@@ -147,7 +163,7 @@ getUriForFile：第一个参数是Context；第二个参数，就是我们之前
 
 临时授权方法如下：
 
-```
+```java
 protected void onCreate(Bundle savedInstanceState) {
         ...
         // Define a listener that responds to clicks in the ListView
@@ -182,7 +198,8 @@ protected void onCreate(Bundle savedInstanceState) {
 #### 例子
 
 调用相机获取图片可以用如下代码实现：
-```
+
+```java
 Intent intent = new Intent();
 intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
 
