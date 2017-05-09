@@ -87,5 +87,4 @@ tags:
 
 
 #### reference:
-* [What's next for android-apt](http://www.runoob.com/design-pattern/design-pattern-tutorial.html)
-* [android-apt Migration](https://bitbucket.org/hvisser/android-apt/wiki/Migration)
+* [设计模式](http://www.runoob.com/design-pattern/design-pattern-tutorial.html)
